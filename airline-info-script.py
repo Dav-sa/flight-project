@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import requests
+from pprint import pprint
 
 
 load_dotenv()
@@ -14,4 +15,9 @@ api_response = api_result.json()
 
 air_france_general_data = api_response["data"][17]
 
-print(air_france_general_data)
+desired_dict = next(
+    (item for item in api_response["data"] if item.get("airline_name") == "Air France"),
+    None,
+)
+
+print(desired_dict)

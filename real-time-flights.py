@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from pprint import pprint
 import requests
 
 
@@ -14,9 +15,10 @@ api_result = requests.get(
 
 api_response = api_result.json()
 
+
 current_flights = []
 for item in api_response["data"]:
     if item["airline"]["name"] == "KLM":
         current_flights.append(item)
 
-print(current_flights)
+pprint(current_flights)
