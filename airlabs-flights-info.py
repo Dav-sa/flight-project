@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import requests
 from pprint import pprint
+import json
 
 
 load_dotenv()
@@ -14,5 +15,6 @@ api_result = requests.get(
 )
 
 api_response = api_result.json()
-
+with open("flights.json", "w") as file:
+    json.dump(api_response, file, indent=4)
 pprint(api_response)
