@@ -18,7 +18,7 @@ api_response = api_result.json()
 
 current_flights = []
 for item in api_response["data"]:
-    if item["airline"]["name"] == "KLM":
+    if item["airline"]["name"] == "American Airlines":
         current_flights.append(item)
 
 pprint(current_flights)
