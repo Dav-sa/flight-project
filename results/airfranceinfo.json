@@ -1,0 +1,17 @@
+{
+    "id": "18",
+    "fleet_average_age": "11.7",
+    "airline_id": "18",
+    "callsign": "AIRFRANS",
+    "hub_code": "CDG",
+    "iata_code": "AF",
+    "icao_code": "AFR",
+    "country_iso2": "FR",
+    "date_founded": "1933",
+    "iata_prefix_accounting": "57",
+    "airline_name": "Air France",
+    "country_name": "France",
+    "fleet_size": "226",
+    "status": "active",
+    "type": "scheduled"
+}
