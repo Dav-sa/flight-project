@@ -10,6 +10,13 @@ with open("flights.json") as file:
 # Establish a connection to the local MongoDB instance
 client = pymongo.MongoClient("mongodb://127.0.0.1:27017/meteor?ssl=false")
 
+try:
+    # Check if the server is available using the ping command
+    client.admin.command("ping")
+    print("Server is available")
+except ConnectionFailure:
+    print("Server not available")
+
 # Select the database
 db = client["meteor"]
 
@@ -17,11 +24,4 @@ db = client["meteor"]
 collection = db["real time flights"]
 
 # Insert the JSON data into the collection
-collection.insert_one(data)
-
-try:
-    # Check if the server is available using the ping command
-    client.admin.command("ping")
-    print("Server is available")
-except ConnectionFailure:
-    print("Server not available")
+collection.insert_many(data)
