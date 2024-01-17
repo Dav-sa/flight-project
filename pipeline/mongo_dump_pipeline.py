@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import json
+from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
 # Read the JSON file
