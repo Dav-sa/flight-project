@@ -9,12 +9,11 @@ api_key = os.environ.get("AIRLABS_KEY")
 
 params = {"api_key": api_key}
 
-api_result = requests.get("https://airlabs.co/api/v9/schedules", params)
+api_result = requests.get(
+    "https://airlabs.co/api/v9/schedules?airline_icao=AFR&api_key=59c68e10-14f1-45c8-8faa-a38abb8681b6"
+)
 
-print(api_result.content)
+api_response = api_result.json()["response"]
 
-"""with open("schedules.json", "w") as file:
-    json.dump(api_response, file, indent=4)
 
 pprint(api_response)
-"""

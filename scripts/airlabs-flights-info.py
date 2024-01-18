@@ -15,6 +15,7 @@ api_result = requests.get(
 )
 
 api_response = api_result.json()
+
 with open("flights.json", "w") as file:
     json.dump(api_response, file, indent=4)
 pprint(api_response)
