@@ -1,27 +1,26 @@
-import pymongo
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 import json
 from pymongo.errors import ConnectionFailure
+import dns.resolver
 
-# Read the JSON file
-with open("flights.json") as file:
-    data = json.load(file)
+dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
+dns.resolver.default_resolver.nameservers = ["8.8.8.8"]
 
 
-# Establish a connection to the local MongoDB instance
-client = pymongo.MongoClient("mongodb://127.0.0.1:27017/meteor?ssl=false")
+uri = 'mongodb+srv://david:ml&é"ùZE!!@flight-project.iospxhv.mongodb.net/?retryWrites=true&w=majority'
 
-# Select the database
-db = client["meteor"]
 
-# Select the collection
-collection = db["real time flights"]
-
-# Insert the JSON data into the collection
-collection.insert_one(data)
+client = MongoClient(uri, server_api=ServerApi("1"))
+db = client["airfrance"]
+collection = db["airfrance_flights"]
 
 try:
-    # Check if the server is available using the ping command
     client.admin.command("ping")
     print("Server is available")
 except ConnectionFailure:
     print("Server not available")
+
+with open("./results/flights.json") as f:
+    data = json.load(f)
+    collection.insert_one(data)

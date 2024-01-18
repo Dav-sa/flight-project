@@ -1,0 +1,59 @@
+{
+    "error": {
+        "message": "dep_iata/dep_icao or arr_iata/arr_icao is required",
+        "code": "wrong_params"
+    },
+    "request": {
+        "lang": "en",
+        "currency": "EUR",
+        "time": 1,
+        "id": "h0d4b4j3hu8",
+        "server": "b",
+        "host": "airlabs.co",
+        "pid": 2173358,
+        "key": {
+            "id": 29464,
+            "api_key": "80918319-c19e-4235-aa84-357bfc626cd3",
+            "type": "free",
+            "expired": "2024-02-10T23:00:00.000Z",
+            "registered": "2024-01-12T14:01:51.000Z",
+            "upgraded": null,
+            "limits_by_hour": 2500,
+            "limits_by_minute": 250,
+            "limits_by_month": 1000,
+            "limits_total": 988
+        },
+        "params": {
+            "lang": "en"
+        },
+        "version": 9,
+        "method": "schedules",
+        "client": {
+            "ip": "2a01:e0a:241:6a0:1283:33d6:ae94:215d",
+            "geo": {
+                "country_code": "FR",
+                "country": "France",
+                "continent": "Europe",
+                "city": "Chaville",
+                "lat": 48.803,
+                "lng": 2.191,
+                "timezone": "Europe/Paris"
+            },
+            "connection": {
+                "type": "cable/dsl",
+                "isp_code": 12322,
+                "isp_name": "Free SAS"
+            },
+            "device": {},
+            "agent": {},
+            "karma": {
+                "is_blocked": false,
+                "is_crawler": false,
+                "is_bot": false,
+                "is_friend": false,
+                "is_regular": true
+            }
+        }
+    },
+    "terms": "Unauthorized access is prohibited and punishable by law. \nReselling data 'As Is' without AirLabs.Co permission is strictly prohibited. \nFull terms on https://airlabs.co/. \nContact us info@airlabs.co"
+}
