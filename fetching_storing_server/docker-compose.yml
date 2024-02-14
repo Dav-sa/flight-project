@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  database:
+    container_name: mongo_airlines
+    image: mongo:5.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=airlines_admin
+      - MONGO_INITDB_ROOT_PASSWORD=airlines_password
+      - MONGO_INITDB_DATABASE=auth
+    volumes:
+      - ./data:/data/db
+    ports:
+      - '27017:27017'
+    command: mongod --bind_ip_all
+    restart: on-failure
