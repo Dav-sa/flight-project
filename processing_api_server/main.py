@@ -46,7 +46,7 @@ def get_airports_delay():
         rdd = df.rdd
         airports_delay = dict(df.rdd.map(lambda x: (x.dep_icao, ((0 if x.dep_delayed==None else x.dep_delayed), 1))) \
             .reduceByKey(lambda tuple1,tuple2: tuple(map(lambda x, y: x + y, tuple1, tuple2))) \
-            .map(lambda x: (x[0],  round(x[1][0]/x[1][1], 2)) ) \
+            .map(lambda x: (x[0], round(x[1][0]/x[1][1], 2))) \
             .sortBy(lambda x: x[1], ascending = False) \
             .collect())
         return Response(content=json.dumps(airports_delay), media_type="application/json")
@@ -62,7 +62,7 @@ def get_mean_delay():
         rdd = df.rdd
         delayed_sum = rdd.map(lambda x: x.dep_delayed).filter(lambda x: x!=None).sum()
         return {
-            "Retard moyen d'airfrance: %.2f" %(delayed_sum/rdd.count()))
+            round(delayed_sum/rdd.count(), 2)
             }
     except Exception as e:
         return e
@@ -70,7 +70,7 @@ def get_mean_delay():
 @api.get("/flights_map")
 def get_flights_map():
 	"""Returns a flight map as a png
-    """
+	"""
     try:
         params = {"api_key": airlabs_api_key}
         flights_result = requests.get("https://airlabs.co/api/v9/flights", params)
@@ -93,6 +93,8 @@ class Item(BaseModel):
 
 @api.post('/ml_prediction')
 def ml_prediction(item: Item):
+	"""Returns a Linear Regression and a Random Forest delay prediction on a given set of variables
+ 	"""
     try:
         spark_read()
         df_ml = df.select(df.dep_delayed, df.dep_icao, df.arr_icao, df.duration, df.flight_rules, df.wind_speed)
@@ -125,8 +127,8 @@ def ml_prediction(item: Item):
         rfpredicted = rfModel.transform(df_input)
 
         return {
-            "Regression linéaire": lrpredicted.show(),
-            "Random Forest": rfpredicted.show())
+            "Linear Regression": lrpredicted.show(),
+            "Random Forest": rfpredicted.show()
             }
     except Exception as e:
         return e
