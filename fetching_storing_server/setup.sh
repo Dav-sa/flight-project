@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pip install requirements.txt
+pip3 install requirements.txt
 
 docker compose up -d
 
