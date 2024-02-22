@@ -87,7 +87,7 @@ class Item(BaseModel):
 async def ml_prediction(item: Item):
     df = spark_read()
     df_ml = df.select(df.dep_delayed, df.dep_icao, df.arr_icao, df.duration, df.flight_rules, df.wind_speed)
-    df_ml = df_ml.fillna(0, "dep_delayed").dropna()
+    df_ml = df_ml.withColumnRenamed("dep_delayed", "label").fillna(0, "label").dropna()
     df_input = spark.createDataFrame([(item.dep_icao, item.arr_icao, item.duration, item.flight_rules, item.wind_speed)],["dep_icao", "arr_icao", "duration", "flight_rules", "wind_speed"])
 
     rulesIndexer = StringIndexerModel.from_labels(["VFR","MVFR","IFR","LIFR"], inputCol="flight_rules", outputCol="flight_rules_indexed")
@@ -103,12 +103,12 @@ async def ml_prediction(item: Item):
     df_input = ohe.transform(df_input)
 
     assembler = VectorAssembler(inputCols=["duration", "dep_icao_ohe", "arr_icao_ohe", "flight_rules_indexed", "wind_speed"],outputCol="features")
-    df_ml = assembler.transform(df_ml).select("dep_delayed", "features").withColumnRenamed("dep_delayed", "label")
-    df_input = assembler.transform(df_input).select("features")
+    df_ml = assembler.transform(df_ml)
+    df_input = assembler.transform(df_input)
 
     rf = RandomForestRegressor(labelCol = "label",featuresCol = 'features')
     rfModel = rf.fit(df_ml)
-    rfpredicted = rfModel.transform(df_input).collect()[0][1]
+    rfpredicted = rfModel.transform(df_input).collect()[0][-1]
 
     return {
         "Random Forest prediction": round(rfpredicted, 2),
