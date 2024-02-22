@@ -8,6 +8,8 @@ import json
 import pandas as pd
 import geopandas as gpd
 import contextily as cx
+import requests
+import matplotlib.pyplot as plt
 from pyspark.ml.feature import StringIndexerModel, StringIndexer, OneHotEncoder, VectorAssembler
 from pyspark.ml.regression import LinearRegression, RandomForestRegressor
 
