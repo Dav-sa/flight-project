@@ -10,8 +10,7 @@ import geopandas as gpd
 import contextily as cx
 import requests
 import matplotlib.pyplot as plt
-from pyspark.ml.feature import StringIndexerModel, StringIndexer, OneHotEncoder, VectorAssembler
-from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml import PipelineModel
 
 api = FastAPI(
 	title="Airlines_API",
@@ -22,7 +21,7 @@ load_dotenv()
 uri = os.environ.get("MONGODB_URI")
 airlabs_api_key = os.environ.get("AIRLABS_KEY")
 
-spark = SparkSession.builder.appName("airlines") \
+spark = SparkSession.builder.appName("airlines_api") \
     .config("spark.mongodb.read.connection.uri", uri) \
     .config("spark.mongodb.write.connection.uri", uri) \
     .config('spark.jars.packages', 'org.mongodb.spark:mongo-spark-connector_2.12:10.2.1') \
@@ -85,31 +84,9 @@ class Item(BaseModel):
 
 @api.post('/ml_prediction')
 async def ml_prediction(item: Item):
-    df = spark_read()
-    df_ml = df.select(df.dep_delayed, df.dep_icao, df.arr_icao, df.duration, df.flight_rules, df.wind_speed)
-    df_ml = df_ml.withColumnRenamed("dep_delayed", "label").fillna(0, "label").dropna()
     df_input = spark.createDataFrame([(item.dep_icao, item.arr_icao, item.duration, item.flight_rules, item.wind_speed)],["dep_icao", "arr_icao", "duration", "flight_rules", "wind_speed"])
-
-    rulesIndexer = StringIndexerModel.from_labels(["VFR","MVFR","IFR","LIFR"], inputCol="flight_rules", outputCol="flight_rules_indexed")
-    df_ml = rulesIndexer.transform(df_ml)
-    df_input = rulesIndexer.transform(df_input)
-
-    nameIndexer = StringIndexer(inputCols=["dep_icao","arr_icao"], outputCols=["dep_icao_indexed","arr_icao_indexed"]).fit(df_ml)
-    df_ml = nameIndexer.transform(df_ml)
-    df_input = nameIndexer.transform(df_input)
-
-    ohe = OneHotEncoder(inputCols=["dep_icao_indexed","arr_icao_indexed"], outputCols=["dep_icao_ohe","arr_icao_ohe"]).fit(df_ml)
-    df_ml = ohe.transform(df_ml)
-    df_input = ohe.transform(df_input)
-
-    assembler = VectorAssembler(inputCols=["duration", "dep_icao_ohe", "arr_icao_ohe", "flight_rules_indexed", "wind_speed"],outputCol="features")
-    df_ml = assembler.transform(df_ml)
-    df_input = assembler.transform(df_input)
-
-    rf = RandomForestRegressor(labelCol = "label",featuresCol = 'features')
-    rfModel = rf.fit(df_ml)
-    rfpredicted = rfModel.transform(df_input).collect()[0][-1]
-
+    rfpredicted = PipelineModel.load("rf_model").transform(df_input).collect()[0][-1]
     return {
         "Random Forest prediction": round(rfpredicted, 2),
         }
+
