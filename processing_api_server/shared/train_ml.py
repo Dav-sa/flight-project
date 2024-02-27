@@ -14,7 +14,7 @@ spark = SparkSession.builder.appName("airlines_ml") \
     .config('spark.jars.packages', 'org.mongodb.spark:mongo-spark-connector_2.12:10.2.1') \
     .getOrCreate()
 
-pipeline = "[{'$match':{'status':'active'}},{'$project' : {'dep_icao':1, 'arr_icao':1, 'duration':1, 'dep_delayed':1, 'flight_rules':1, 'wind_speed':1}}]"
+pipeline = "[{'$match':{'status':'active'}}, {'$project' : {'dep_icao':1, 'arr_icao':1, 'duration':1, 'dep_delayed':1, 'flight_rules':1, 'wind_speed':1}}]"
 df = spark.read \
     .format("mongodb") \
     .option("database", "airlines") \
