@@ -29,7 +29,7 @@ spark = SparkSession.builder.appName("airlines_api") \
 
 def spark_read():
 	spark = SparkSession.builder.getOrCreate()
-	pipeline = "[{'$project' : {'flight_icao':1, 'airline_icao':1, 'dep_icao':1, 'arr_icao':1, 'duration':1, 'dep_delayed':1, 'flight_rules':1, 'wind_speed':1}}]"
+	pipeline = "[{'$match':{'status':'landed'}}, {'$project' : {'flight_icao':1, 'airline_icao':1, 'dep_icao':1, 'arr_icao':1, 'duration':1, 'dep_delayed':1}}]"
 	df = spark.read \
 	        .format("mongodb") \
 	        .option("database", "airlines") \
