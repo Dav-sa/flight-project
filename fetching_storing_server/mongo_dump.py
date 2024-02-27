@@ -23,7 +23,7 @@ for x in api_response:
     try:
         dep_icao = x["dep_icao"]
         if dep_icao!=None and dep_icao not in Airports_weather.keys():
-            weather_result = requests.get("https://avwx.rest/api/metar/" + dep_icao, headers={"Authorization":"BEARER " + avwx_api_key}).json()
+            weather_result = requests.get("https://avwx.rest/api/metar/" + dep_icao , headers={"Authorization":"BEARER " + avwx_api_key}).json()
             try:
                 flight_rules = weather_result["flight_rules"]
             except:
@@ -34,6 +34,8 @@ for x in api_response:
                 wind_speed = None
             Airports_weather[dep_icao] = [flight_rules, wind_speed]
     except Exception as e:
+        print(x["dep_icao"])
+        Airports_weather[x["dep_icao"]] = [None, None]
         print(e)
 
 client = MongoClient(uri)
@@ -51,10 +53,15 @@ collection = db["airfrance"]
 
 BulkArr = []
 for x in api_response:
-    airport_weather = Airports_weather[x["dep_icao"]]
-    BulkArr.append(UpdateOne(
-    {"flight_icao": x["flight_icao"], "flight_number": x["flight_number"]},
-    {'$set': x, '$setOnInsert': {"flight_rules": airport_weather[0], "wind_speed": airport_weather[1]}}, upsert=True))
+    if x["status"] != "active":
+        BulkArr.append(UpdateOne(
+        {"flight_icao": x["flight_icao"], "flight_number": x["flight_number"], "status": x["status"]},
+        {'$set': x}, upsert=True))
+    else:
+        airport_weather = Airports_weather[x["dep_icao"]]
+        BulkArr.append(UpdateOne(
+        {"flight_icao": x["flight_icao"], "flight_number": x["flight_number"], "status": x["status"]},
+        {'$set': x, '$setOnInsert': {"flight_rules": airport_weather[0], "wind_speed": airport_weather[1]}}, upsert=True))
 
 try :
     result = collection.bulk_write( BulkArr )
