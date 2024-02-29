@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 Dockerfile_folders="airlines_api airlines_ml"
 
@@ -8,5 +8,5 @@ for i in $Dockerfile_folders
   done
 
 docker-compose up -d
-docker run -d --rm --volume $PWD/shared:/home/shared airlines_ml python3 /home/shared/train_ml.py
-crontab -l | { cat; echo "18 */1 * * * docker run -d --rm --volume $PWD/shared:/home/shared airlines_ml python3 /home/shared/train_ml.py"; } | crontab -
+
+crontab -l | { cat; echo "18 */1 * * * docker-compose -f $PWD/docker-compose.yml up airlines_ml"; } | crontab -
