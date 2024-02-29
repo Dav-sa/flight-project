@@ -34,3 +34,4 @@ rf = RandomForestRegressor(labelCol="label", featuresCol="features")
 pipeline = Pipeline(stages=[rulesIndexer, nameIndexer, ohe, assembler, rf])
 
 model = pipeline.fit(df_train).write().overwrite().save("rf_model")
+
