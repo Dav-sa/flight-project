@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 Dockerfile_folders="airlines_api airlines_ml"
 
