@@ -89,4 +89,3 @@ async def ml_prediction(item: Item):
     return {
         "Random Forest prediction": round(rfpredicted, 2),
         }
-
