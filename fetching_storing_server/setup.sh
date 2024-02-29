@@ -4,4 +4,5 @@ pip3 install requirements.txt
 
 docker-compose up -d
 
+python3 $PWD/mongo_dump.py
 crontab -l | { cat; echo "09 */1 * * * python3 $PWD/mongo_dump.py"; } | crontab -
