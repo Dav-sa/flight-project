@@ -1,9 +1,15 @@
 version: "3.9"
-
 services:
+  airlines_ml:
+    image: airlines_ml:latest
+    volumes:
+      - ./shared:/home/shared
+
   airlines_api:
     image: airlines_api:latest
     ports:
       - "8000:8000"
     volumes:
       - ./shared/:/home/shared/
+    depends_on:
+      - airlines_ml
