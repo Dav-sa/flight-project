@@ -7,6 +7,6 @@ for i in $Dockerfile_folders
     docker image build $i -t $i:latest
   done
 
-docker compose up -d
-docker run --rm --volume $PWD/shared:/home/shared -d airlines_ml python3 /home/shared/train_ml.py
-crontab -l | { cat; echo "18 */1 * * * docker run --rm --volume $PWD/shared:/home/shared -d airlines_ml python3 /home/shared/train_ml.py"; } | crontab -
+docker-compose up -d
+docker run -d --rm --volume $PWD/shared:/home/shared airlines_ml python3 /home/shared/train_ml.py
+crontab -l | { cat; echo "18 */1 * * * docker run -d --rm --volume $PWD/shared:/home/shared airlines_ml python3 /home/shared/train_ml.py"; } | crontab -
