@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   airlines_api:
     image: airlines_api:latest
