@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-pip3 install requirements.txt
+docker image build mongo_dump -t mongo_dump:latest
 
 docker-compose up -d
 
-python3 $PWD/mongo_dump.py
-crontab -l | { cat; echo "09 */1 * * * python3 $PWD/mongo_dump.py"; } | crontab -
+sleep 60
+
+docker run --rm --volume $PWD/shared:/home/shared -d mongo_dump
+crontab -l | { cat; echo "09 */1 * * * docker run --rm --volume $PWD/shared:/home/shared -d mongo_dump"; } | crontab -
